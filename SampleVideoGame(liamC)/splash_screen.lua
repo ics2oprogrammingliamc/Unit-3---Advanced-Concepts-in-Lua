@@ -22,29 +22,49 @@ local scene = composer.newScene( sceneName )
 ----------------------------------------------------------------------------------------
 -- LOCAL VARIABLES
 -----------------------------------------------------------------------------------------
- 
--- The local variables for this scene
-local beetleship
-local scrollXSpeed = 8
-local scrollYSpeed = -3
-local jungleSounds = audio.loadSound("Sounds/animals144.mp3")
-local jungleSoundsChannel
+-- create company logo
+local companyLogo 
 
+local companyLogo2
+
+-- set the scroll speed
+local scrollSpeed = 14
+
+-- create local for rotation
+local rotate = 0
+
+local visible = 0
+
+local scale = 1
 --------------------------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
 --------------------------------------------------------------------------------------------
-
--- The function that moves the beetleship across the screen
-local function moveBeetleship()
-    beetleship.x = beetleship.x + scrollXSpeed
-    beetleship.y = beetleship.y + scrollYSpeed
-end
 
 -- The function that will go to the main menu 
 local function gotoMainMenu()
     composer.gotoScene( "main_menu" )
 end
+local function AnimateCompanyLogo(event)
+    -- add the scroll speed to the x co-ordinate of the logo
+    companyLogo.x = companyLogo.x + scrollSpeed
 
+    rotate = rotate + scrollSpeed
+
+    companyLogo.alpha = visible + .5
+
+    companyLogo:scale( scale, scale )
+
+    scale = scale + .00025
+
+    visible = visible + .005
+    companyLogo.rotation = rotate
+end
+
+local function PopUpLogo()
+    companyLogo2.isVisible = true
+    companyLogo.isVisible = false
+end
+-----------
 -----------------------------------------------------------------------------------------
 -- GLOBAL SCENE FUNCTIONS
 -----------------------------------------------------------------------------------------
@@ -55,18 +75,19 @@ function scene:create( event )
     -- Creating a group that associates objects with the scene
     local sceneGroup = self.view
 
-    -- set the background to be black
-    display.setDefault("background", 0, 0, 0)
+    companyLogo = display.newImageRect("Images/CompanyLogoNathanC@2x.png", 100, 100)
+    companyLogo.x = 0
+    companyLogo.y = display.contentHeight/2
 
-    -- Insert the beetleship image
-    beetleship = display.newImageRect("Images/beetleship.png", 200, 200)
-
-    -- set the initial x and y position of the beetleship
-    beetleship.x = 100
-    beetleship.y = display.contentHeight/2
+    companyLogo2 = display.newImageRect("Images/CompanyLogoNathanC@2x.png", 100, 100)
+    companyLogo2.isVisible = false
+    companyLogo2.x = display.contentWidth/2
+    companyLogo2.y = display.contentHeight/2
+    companyLogo2:scale(3.5, 3.5)
 
     -- Insert objects into the scene group in order to ONLY be associated with this scene
-    sceneGroup:insert( beetleship )
+    sceneGroup:insert( companyLogo )
+    sceneGroup:insert( companyLogo2 )
 
 end -- function scene:create( event )
 
@@ -94,8 +115,9 @@ function scene:show( event )
         jungleSoundsChannel = audio.play(jungleSounds )
 
         -- Call the moveBeetleship function as soon as we enter the frame.
-        Runtime:addEventListener("enterFrame", moveBeetleship)
+        Runtime:addEventListener("enterFrame", AnimateCompanyLogo)
 
+        timer.performWithDelay(2000, PopUpLogo)
         -- Go to the main menu screen after the given time.
         timer.performWithDelay ( 3000, gotoMainMenu)          
         

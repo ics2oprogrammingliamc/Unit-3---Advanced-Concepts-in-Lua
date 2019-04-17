@@ -1,9 +1,8 @@
 -----------------------------------------------------------------------------------------
--- main.lua
--- Created by: Gil Robern
--- Modified by: Your Name
--- Date: Month Day, Year
--- Description: This calls the splash screen of the app to load itself.
+-- Title: Click on Right Answer
+-- Name: Liam Csiffary
+-- Course: ICS2O/3C
+-- This program gives you three options you have to click on the right one.
 -----------------------------------------------------------------------------------------
 
 -- Hiding Status Bar
