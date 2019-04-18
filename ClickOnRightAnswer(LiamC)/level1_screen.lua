@@ -359,7 +359,7 @@ function scene:create( event )
 
     -- create the text object that will hold the add equation. Make it empty for now.
     addEquationTextObject = display.newText( "", display.contentWidth*1/4, display.contentHeight*2/5, nil, 50 )
-
+    addEquationTextObject:scale(1.2,1.2)
     -- sets the color of the add equation text object
     addEquationTextObject:setTextColor(155/255, 42/255, 198/255)
 
@@ -367,9 +367,13 @@ function scene:create( event )
     answerTextObject = display.newText("", display.contentWidth*.4, display.contentHeight/2, nil, 50 )
     answerTextObject:scale(1.1,1.1)
     wrongAnswer1TextObject = display.newText("", display.contentWidth*.3, display.contentHeight/2, nil, 50 )
+    wrongAnswer1TextObject:scale(1.2,1.2)
     wrongAnswer2TextObject = display.newText("", display.contentWidth*.2, display.contentHeight/2, nil, 50 )
+    wrongAnswer2TextObject:scale(1.2,1.2)
     wrongAnswer3TextObject = display.newText("", display.contentWidth*.4, display.contentHeight/2, nil, 50 )
+    wrongAnswer3TextObject:scale(1.2,1.2)
     numberCorrectText = display.newText("", display.contentWidth*4/5, display.contentHeight*6/7, nil, 25)
+    numberCorrectText:scale(1.2,1.2)
 
     -- create the text object that will hold the number of lives
     livesText = display.newText("", display.contentWidth*4/5, display.contentHeight*8/9, nil, 25) 

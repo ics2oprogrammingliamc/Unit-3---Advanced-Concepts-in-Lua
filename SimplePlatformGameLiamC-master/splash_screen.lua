@@ -1,70 +1,58 @@
 -----------------------------------------------------------------------------------------
 --
--- splash_screen.lua
--- Created by: Liam Csiffary
--- Date: April 17, 2019
--- Description: This is the splash screen of the game. It displays the 
--- company logo that rotates across the screen then appears in the middle
+-- intro_screen.lua
+-- Created by: Ms Raffin
+-- Date: Nov. 22nd, 2014
+-- Description: This is the splash screen of the game. It displays the app logo and the 
+-- company logo with some sort of animation...
 -----------------------------------------------------------------------------------------
 
-display.setStatusBar(display.HiddenStatusBar)
 -- Use Composer Library
 local composer = require( "composer" )
+
+-- use the physics library
+local physics = require("physics")
 
 -- Name the Scene
 sceneName = "splash_screen"
 
------------------------------------------------------------------------------------------
-
 -- Create Scene Object
 local scene = composer.newScene( sceneName )
 
-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------
 -- LOCAL VARIABLES
 -----------------------------------------------------------------------------------------
--- create company logo
-local companyLogo 
 
-local companyLogo2
+local logo
+local bottom
 
--- set the scroll speed
-local scrollSpeed = 14
+--Spring sound effect
+ local springsound = audio.loadSound( "Sounds/BoingSoundEffect.mp3" )
+ local springSoundChannel
 
--- create local for rotation
-local rotate = 0
-
-local visible = 0
-
-local scale = 1
---------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
---------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
 
--- The function that will go to the main menu 
 local function gotoMainMenu()
     composer.gotoScene( "main_menu" )
 end
-local function AnimateCompanyLogo(event)
-    -- add the scroll speed to the x co-ordinate of the logo
-    companyLogo.x = companyLogo.x + scrollSpeed
 
-    rotate = rotate + scrollSpeed
+--When this function is called, play the springt sound effect
+ local function SpringSoundEffect( )
+    -- play sound
+    springSoundChannel = audio.play(springsound)
+ end
 
-    companyLogo.alpha = visible + .5
-
-    companyLogo:scale( scale, scale )
-
-    scale = scale + .00025
-
-    visible = visible + .005
-    companyLogo.rotation = rotate
+--When the game starts, it waits and calls this function
+local function SplashStart( )
+    timer.performWithDelay(1950, SpringSoundEffect)
 end
 
-local function PopUpLogo()
-    companyLogo2.isVisible = true
-    companyLogo.isVisible = false
-end
------------
+
+
 -----------------------------------------------------------------------------------------
 -- GLOBAL SCENE FUNCTIONS
 -----------------------------------------------------------------------------------------
@@ -75,19 +63,31 @@ function scene:create( event )
     -- Creating a group that associates objects with the scene
     local sceneGroup = self.view
 
-    companyLogo = display.newImageRect("Images/CompanyLogoNathanC@2x.png", 100, 100)
-    companyLogo.x = 0
-    companyLogo.y = display.contentHeight/2
+    --Hide the status bar
+    display.setStatusBar(display.HiddenStatusBar)
 
-    companyLogo2 = display.newImageRect("Images/CompanyLogoNathanC@2x.png", 100, 100)
-    companyLogo2.isVisible = false
-    companyLogo2.x = display.contentWidth/2
-    companyLogo2.y = display.contentHeight/2
-    companyLogo2:scale(3.5, 3.5)
+    -- set the background color
+    display.setDefault("background", 1, 1, 1)
+
+
+    -- logo image
+    logo = display.newImageRect("Images/CompanyLogoLeo.png", 700, 500)
+
+    -- set the x and y position of the logo
+    logo.x = display.contentWidth/2
+    logo.y = -300
+   
+    
+    -- create the bottom and set its position on the screen
+    bottom = display.newLine(500, 400, 0, 144)
+    bottom.x = display.contentCenterX
+    bottom.y = 768
+    bottom.isVisible = false
+
 
     -- Insert objects into the scene group in order to ONLY be associated with this scene
-    sceneGroup:insert( companyLogo )
-    sceneGroup:insert( companyLogo2 )
+    sceneGroup:insert( logo )
+    sceneGroup:insert (bottom)
 
 end -- function scene:create( event )
 
@@ -109,17 +109,24 @@ function scene:show( event )
     if ( phase == "will" ) then
        
     -----------------------------------------------------------------------------------------
-
+        -- start the physics engine
+        physics.start()
+    
     elseif ( phase == "did" ) then
-        -- start the splash screen music
-        jungleSoundsChannel = audio.play(jungleSounds )
 
-        -- Call the moveBeetleship function as soon as we enter the frame.
-        Runtime:addEventListener("enterFrame", AnimateCompanyLogo)
+        --Make the logo dynamic so that it will move
+        physics.addBody(logo, "dynamic", {density=0.04, friction=0})
 
-        timer.performWithDelay(2000, PopUpLogo)
+        logo:applyForce( 0, 1000, logo.x, logo.y )
+
+        --make the bottom static so that it won't move
+        physics.addBody(bottom, "static")
+
+        -- Call the GameStart function as soon as we enter the frame.
+        SplashStart( )
+
         -- Go to the main menu screen after the given time.
-        timer.performWithDelay ( 3000, gotoMainMenu)          
+        timer.performWithDelay ( 4500, gotoMainMenu)          
         
     end
 
@@ -132,24 +139,23 @@ function scene:hide( event )
 
     -- Creating a group that associates objects with the scene
     local sceneGroup = self.view
-    local phase = event.phase
+    local phase = event.phase 
 
-    -----------------------------------------------------------------------------------------
+    -- Called when the scene is still off screen (but is about to come on screen).
+    if ( phase == "will" ) then
 
-    -- Called when the scene is on screen (but is about to go off screen).
-    -- Insert code here to "pause" the scene.
-    -- Example: stop timers, stop animation, stop audio, etc.
-    if ( phase == "will" ) then  
+        --Make the logo dynamic so that it will move
+        physics.removeBody(logo)
 
-    -----------------------------------------------------------------------------------------
-
-    -- Called immediately after scene goes off screen.
-    elseif ( phase == "did" ) then
+        --make the bottom static so that it won't move
+        physics.removeBody(bottom)
         
-        -- stop the jungle sounds channel for this screen
-        audio.stop(jungleSoundsChannel)
+    elseif ( phase == "did") then
+
+        physics.stop()
     end
 
+    -----------------------------------------------------------------------------------------
 end --function scene:hide( event )
 
 -----------------------------------------------------------------------------------------
