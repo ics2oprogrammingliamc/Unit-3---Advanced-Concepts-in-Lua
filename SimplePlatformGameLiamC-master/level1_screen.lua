@@ -58,13 +58,16 @@ local numLives = 2
 
 local rArrow 
 local uArrow
+local lArrow
 
 local motionx = 0
 local SPEED = 5
+local SPEEDR
 local LINEAR_VELOCITY = -100
 local GRAVITY = 7
 
 local leftW 
+local rightW
 local topW
 local floor
 
@@ -81,6 +84,12 @@ local questionsAnswered = 0
 -- When right arrow is touched, move character right
 local function right (touch)
     motionx = SPEED
+    character.xScale = 1
+end
+
+-- local function for the left movement
+local function left (touch)
+    motionx = SPEEDR
     character.xScale = 1
 end
 
@@ -107,11 +116,13 @@ end
 local function AddArrowEventListeners()
     rArrow:addEventListener("touch", right)
     uArrow:addEventListener("touch", up)
+    lArrow:addEventListener("touch", left)
 end
 
 local function RemoveArrowEventListeners()
     rArrow:removeEventListener("touch", right)
     uArrow:removeEventListener("touch", up)
+    lArrow:removeEventListener("touch", left)
 end
 
 local function AddRuntimeListeners()
@@ -463,12 +474,10 @@ function scene:create( event )
     -- Insert objects into the scene group in order to ONLY be associated with this scene
     sceneGroup:insert( uArrow)
 
-    --WALLS--
-    leftW = display.newLine( 0, 0, 0, display.contentHeight)
-    leftW.isVisible = true
+    __________________________________________
 
-    -- Insert objects into the scene group in order to ONLY be associated with this scene
-    sceneGroup:insert( leftW )
+    --WALLS--
+
 
     rightW = display.newLine( 0, 0, 0, display.contentHeight)
     rightW.x = display.contentCenterX * 2
