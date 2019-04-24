@@ -1,9 +1,10 @@
 -----------------------------------------------------------------------------------------
 --
--- main.lua
--- Created by: Ms Raffin
--- Date: Nov. 22nd, 2014
--- Description: This calls the splash screen of the app to load itself.
+-- Title: Simple Platform Game
+-- Name: Liam Csiffary
+-- Course: ICS2O/3C
+-- This program is a simple platformer where your avatar moves arround answering math questions to advance.
+
 -----------------------------------------------------------------------------------------
 
 -- Hiding Status Bar
