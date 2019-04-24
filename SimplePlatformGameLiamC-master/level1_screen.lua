@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------------------------
 --
 -- level1_screen.lua
--- Created by: Ms Raffin
--- Date: Nov. 22nd, 2014
+-- Created by: Ms Raffin edited by: Liam csiffary
+-- Date: Nov. 22nd, 2014 / editied on 2019-04-24
 -- Description: This is the level 1 screen of the game.
 -----------------------------------------------------------------------------------------
 
@@ -186,6 +186,9 @@ end
 
 local function YouLoseTransition()
     loseSoundChannel = audio.play(loseSound)
+    ball1.isVisible = false
+    ball2.isVisible = false
+    ball3.isVisible = false
     composer.gotoScene( "you_lose" )
 end
 
