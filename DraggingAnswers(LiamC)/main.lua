@@ -1,10 +1,9 @@
 -----------------------------------------------------------------------------------------
---
--- main.lua
--- Created by: Daniel Lopez-Carreon
--- Date: Nov. 22nd, 2014
--- Description: This calls the splash screen of the app to load itself.
------------------------------------------------------------------------------------------
+-- Title: Dragging Answers into Boxes
+-- Name: Liam Csiffary
+-- Course: ICS2O/3C
+-- This program is a simulator in which you drag objects into boxes
+-----------------------------------------------------------------------------------------------------
 
 -- Hiding Status Bar
 display.setStatusBar( display.HiddenStatusBar )
