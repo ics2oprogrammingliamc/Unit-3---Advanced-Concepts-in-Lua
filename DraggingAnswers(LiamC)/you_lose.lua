@@ -48,6 +48,10 @@ function scene:create( event )
     bkg_image.width = display.contentWidth
     bkg_image.height = display.contentHeight
 
+    local loseSound = audio.loadSound("Sounds/youLoseSound/mp3")
+    local loseSoundChannel
+
+
     -- Associating display objects with this scene 
     sceneGroup:insert( bkg_image )
 end
@@ -74,6 +78,7 @@ function scene:show( event )
         -- Called when the scene is now on screen.
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.
+        loseSoundChannel = audio.play(loseSound)
     end
 
 end -- function scene:show( event )

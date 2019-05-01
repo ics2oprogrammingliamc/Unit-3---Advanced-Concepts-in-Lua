@@ -1,9 +1,10 @@
 -----------------------------------------------------------------------------------------
 --
--- main_menu.lua
--- Created by: Your Name
--- Date: Month Day, Year
--- Description: This is the main menu, displaying the credits, instructions & play buttons.
+-- level1_screen.lua
+-- Title: SSG (SuperSlamGames)
+-- Name: Liam Csiffary
+-- Course: ICS2O/3C
+-- This program is the main menu screen, this is where the user is put after the splash screen, and it allows then to view the other screens
 -----------------------------------------------------------------------------------------
 
 display.setStatusBar(display.HiddenStatusBar)
@@ -61,8 +62,9 @@ end
 -- INSERT LOCAL FUNCTION DEFINITION THAT GOES TO INSTRUCTIONS SCREEN 
 
 -----------------------------------------------------------------------------------------
--- GLOBAL SCENE FUNCTIONS
+-- Global Scene Functions
 -----------------------------------------------------------------------------------------
+
 
 -- The function called when the screen doesn't exist
 function scene:create( event )
@@ -75,7 +77,7 @@ function scene:create( event )
     -----------------------------------------------------------------------------------------
 
     -- Insert the background image and set it to the center of the screen
-    bkg_image = display.newImage("Images/main_menu.png")
+    bkg_image = display.newImage("Images/MainMenuNathan@2x.png")
     bkg_image.x = display.contentCenterX
     bkg_image.y = display.contentCenterY
     bkg_image.width = display.contentWidth
