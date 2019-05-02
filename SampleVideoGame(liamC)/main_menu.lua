@@ -38,6 +38,12 @@ local bkg_image
 local playButton
 local creditsButton
 local instructionsButton
+-----------------------------------------------------------------------------------------
+-- Sounds
+-----------------------------------------------------------------------------------------
+
+local bkgMusicMM = audio.loadStream("Sounds/mmBKGmusic.mp3")
+local bkgMusicMMChannel = audio.play( bkgMusicMM, { channel=1, loops=-1 } )
 
 -----------------------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
@@ -102,8 +108,11 @@ function scene:create( event )
             y = display.contentHeight*7/8,
 
             -- Insert the images here
-            defaultFile = "Images/Start Button Unpressed.png",
-            overFile = "Images/Start Button Pressed.png",
+            defaultFile = "Images/PlayButtonUnpressedYourName@2x.png",
+            overFile = "Images/PlayButtonPressedYourName@2x.png",
+
+            width =  250, 
+            height = 125,
 
             -- When the button is released, call the Level1 screen transition function
             onRelease = Level1ScreenTransition          
@@ -119,9 +128,11 @@ function scene:create( event )
             y = display.contentHeight*7/8,
 
             -- Insert the images here
-            defaultFile = "Images/Credits Button Unpressed.png",
-            overFile = "Images/Credits Button Pressed.png",
+            defaultFile = "Images/CreditsButtonUnpressedYourName@2x.png",
+            overFile = "Images/CreditsButtonPressedYourName@2x.png",
 
+            width = 200,
+            height = 100,
             -- When the button is released, call the Credits transition function
             onRelease = CreditsTransition
         } ) 
@@ -141,7 +152,25 @@ function scene:create( event )
             -- When the button is released, call the Level1 screen transition function
             onRelease = InstructionsTransition       
         } )
-    -- ADD INSTRUCTIONS BUTTON WIDGET
+
+
+    levelsButton = widget.newButton( 
+        {   
+            -- Set its position on the screen relative to the screen size
+            x = display.contentWidth/6,
+            y = display.contentHeight*6/8,
+
+            -- Insert the images here
+            defaultFile = "Images/levels.png",
+            overFile = "Images/levels.png",
+
+            width =  250, 
+            height = 125,
+
+            -- When the button is released, call the Level1 screen transition function
+            onRelease = Level1ScreenTransition          
+        } )
+
 
     -----------------------------------------------------------------------------------------
 
@@ -149,6 +178,7 @@ function scene:create( event )
     sceneGroup:insert( playButton )
     sceneGroup:insert( creditsButton )
     sceneGroup:insert( instructionsButton )
+    sceneGroup:insert( levelsButton )
     
     -- INSERT INSTRUCTIONS BUTTON INTO SCENE GROUP
 
@@ -180,7 +210,7 @@ function scene:show( event )
     -- Example: start timers, begin animation, play audio, etc.
     elseif ( phase == "did" ) then       
         
-
+        bkgMusicMMChannel = audio.play(bkgMusicMM)
     end
 
 end -- function scene:show( event )
@@ -203,7 +233,8 @@ function scene:hide( event )
         -- Called when the scene is on screen (but is about to go off screen).
         -- Insert code here to "pause" the scene.
         -- Example: stop timers, stop animation, stop audio, etc.
-
+        audio.stop(bkgMusicMMChannel)
+        bkgMusicMMChannel = audio.stop()
     -----------------------------------------------------------------------------------------
 
     elseif ( phase == "did" ) then

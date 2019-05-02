@@ -1,9 +1,11 @@
 -----------------------------------------------------------------------------------------
 --
 -- level1_screen.lua
--- Created by: Your Name
--- Date: Month Day, Year
--- Description: This is the level 1 screen of the game.
+-- Title: SSG (SuperSlamGames)
+-- Name: Liam Csiffary
+-- Course: ICS2O/3C
+-- This program is the level 1 screen of the program it is where the user starts to play the game.
+
 -----------------------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------------------

@@ -1,10 +1,9 @@
 -----------------------------------------------------------------------------------------
 --
--- credits_screen.lua
--- Created by: Your Name
--- Special thanks to Wal Wal for helping in the design of this framework.
--- Date: Month Day, Year
--- Description: This is the credits page, displaying a back button to the main menu.
+-- Title: SSG (SuperSlamGames)
+-- Name: Liam Csiffary
+-- Course: ICS2O/3C
+-- This program is the credits screen of the program it displays the developpers and the desigjners of the program
 -----------------------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------------------
@@ -28,6 +27,12 @@ scene = composer.newScene( sceneName ) -- This function doesn't accept a string,
 -----------------------------------------------------------------------------------------
 local bkg_image
 local backButton
+-----------------------------------------------------------------------------------------
+-- SOUNDS
+-----------------------------------------------------------------------------------------
+
+local bkgMusicCredits = audio.loadStream("Sounds/creditsBKG.mp3")
+local bkgMusicCreditsChannel = audio.play(bkgMusic, { channel=1, loops=-1 } )
 
 -----------------------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
@@ -82,8 +87,8 @@ function scene:create( event )
         -- height = 106,
 
         -- Setting Visual Properties
-        defaultFile = "Images/Back Button Unpressed.png",
-        overFile = "Images/Back Button Pressed.png",
+        defaultFile = "Images/BackButtonUnpressedYourName@2x.png",
+        overFile = "Images/BackButtonPressedYourName@2x.png",
 
         -- Setting Functional Properties
         onRelease = BackTransition
@@ -120,6 +125,7 @@ function scene:show( event )
         -- Called when the scene is now on screen.
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.
+        bkgMusicCreditsChannel = audio.play(bkgMusic) 
     end
 
 end -- function scene:show( event )
@@ -142,7 +148,7 @@ function scene:hide( event )
         -- Called when the scene is on screen (but is about to go off screen).
         -- Insert code here to "pause" the scene.
         -- Example: stop timers, stop animation, stop audio, etc.
-
+        audio.stop(bkgMusicCreditsChannel)
     -----------------------------------------------------------------------------------------
 
     elseif ( phase == "did" ) then
