@@ -32,7 +32,7 @@ local backButton
 -----------------------------------------------------------------------------------------
 
 local bkgMusicCredits = audio.loadStream("Sounds/creditsBKG.mp3")
-local bkgMusicCreditsChannel = audio.play(bkgMusic, { channel=1, loops=-1 } )
+local bkgMusicCreditsChannel = audio.play(bkgMusicCredits, { channel = 4, loops=-1 } )
 
 -----------------------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
@@ -59,7 +59,7 @@ function scene:create( event )
     -----------------------------------------------------------------------------------------
 
     -- Insert the background image and set it to the center of the screen
-    bkg_image = display.newImageRect("Images/Credits Screen.png", display.contentWidth, display.contentHeight)
+    bkg_image = display.newImageRect("Images/CreditsScreenLiamC.png", display.contentWidth, display.contentHeight)
     bkg_image.x = display.contentCenterX
     bkg_image.y = display.contentCenterY
     bkg_image.width = display.contentWidth
@@ -89,6 +89,9 @@ function scene:create( event )
         -- Setting Visual Properties
         defaultFile = "Images/BackButtonUnpressedYourName@2x.png",
         overFile = "Images/BackButtonPressedYourName@2x.png",
+
+        width = 200,
+        height = 100,
 
         -- Setting Functional Properties
         onRelease = BackTransition
@@ -125,7 +128,7 @@ function scene:show( event )
         -- Called when the scene is now on screen.
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.
-        bkgMusicCreditsChannel = audio.play(bkgMusic) 
+        bkgMusicCreditsChannel = audio.play(bkgMusicCredits) 
     end
 
 end -- function scene:show( event )

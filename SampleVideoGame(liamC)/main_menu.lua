@@ -31,6 +31,12 @@ sceneName = "main_menu"
 local scene = composer.newScene( sceneName )
 
 -----------------------------------------------------------------------------------------
+-- Global vars
+-----------------------------------------------------------------------------------------
+
+soundOn = true
+
+-----------------------------------------------------------------------------------------
 -- LOCAL VARIABLES
 -----------------------------------------------------------------------------------------
 
@@ -38,6 +44,8 @@ local bkg_image
 local playButton
 local creditsButton
 local instructionsButton
+local muteButton
+local unmuteButton
 -----------------------------------------------------------------------------------------
 -- Sounds
 -----------------------------------------------------------------------------------------
@@ -48,7 +56,14 @@ local bkgMusicMMChannel = audio.play( bkgMusicMM, { channel=1, loops=-1 } )
 -----------------------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
 -----------------------------------------------------------------------------------------
-
+local function Mute(touch)
+    if (touch.phase == "ended") then
+        audio.pause(bkgMusicMM)
+        soundOn = false
+        muteButton.isVisible = false
+        unmuteButton.isVisible = true
+    end
+end
 -- Creating Transition Function to Credits Page
 local function CreditsTransition( )       
     composer.gotoScene( "credits_screen", {effect = "zoomInOutFade", time = 500})
@@ -233,7 +248,6 @@ function scene:hide( event )
         -- Called when the scene is on screen (but is about to go off screen).
         -- Insert code here to "pause" the scene.
         -- Example: stop timers, stop animation, stop audio, etc.
-        audio.stop(bkgMusicMMChannel)
         bkgMusicMMChannel = audio.stop()
     -----------------------------------------------------------------------------------------
 

@@ -30,6 +30,13 @@ local bkg_image
 local backButton
 
 -----------------------------------------------------------------------------------------
+-- Sounds
+-----------------------------------------------------------------------------------------
+
+local bkgMusicInstructions = audio.loadStream("Sounds/instructionsMusic.mp3")
+local bkgMusicInstructionsChannel = audio.play(bkgMusicInstructions, { channel=3, loops=-1 } )
+
+-----------------------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
 -----------------------------------------------------------------------------------------
 
@@ -82,8 +89,11 @@ function scene:create( event )
         -- height = 106,
 
         -- Setting Visual Properties
-        defaultFile = "Images/Back Button Unpressed.png",
-        overFile = "Images/Back Button Pressed.png",
+        defaultFile = "Images/BackButtonUnpressedYourName@2x.png",
+        overFile = "Images/BackButtonPressedYourName@2x.png",
+
+        width = 250,
+        height = 125,
 
         -- Setting Functional Properties
         onRelease = BackTransition
@@ -120,6 +130,7 @@ function scene:show( event )
         -- Called when the scene is now on screen.
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.
+        bkgMusicInstructionsChannel = audio.play(bkgMusicInstructions) 
     end
 
 end -- function scene:show( event )
@@ -142,7 +153,7 @@ function scene:hide( event )
         -- Called when the scene is on screen (but is about to go off screen).
         -- Insert code here to "pause" the scene.
         -- Example: stop timers, stop animation, stop audio, etc.
-
+        audio.stop(bkgMusicInstructionsChannel)
     -----------------------------------------------------------------------------------------
 
     elseif ( phase == "did" ) then
