@@ -33,7 +33,7 @@ local backButton
 -----------------------------------------------------------------------------------------
 
 local bkgMusicLevel1 = audio.loadStream("Sounds/level1Music.mp3")
-local bkgMusicLevel1Channel = audio.play(bkgMusic, { channel=1, loops=-1 } )
+local bkgMusicLevel1Channel = audio.play(bkgMusic, { channel=2, loops=-1 } )
 
 
 -----------------------------------------------------------------------------------------
@@ -60,9 +60,8 @@ function scene:create( event )
     -----------------------------------------------------------------------------------------
     -- BACKGROUND AND DISPLAY OBJECTS
     -----------------------------------------------------------------------------------------
-
     -- Insert the background image and set it to the center of the screen
-    bkg_image = display.newImageRect("Images/level1_sceen.png", display.contentWidth, display.contentHeight)
+    bkg_image = display.newImageRect("Images/level1_screen.png", display.contentWidth, display.contentHeight)
     bkg_image.x = display.contentCenterX
     bkg_image.y = display.contentCenterY
     bkg_image.width = display.contentWidth
@@ -83,15 +82,18 @@ function scene:create( event )
     {
         -- Setting Position
         x = display.contentWidth*1/8,
-        y = display.contentHeight*15/16,
+        y = display.contentHeight*14/16,
 
         -- Setting Dimensions
         -- width = 1000,
         -- height = 106,
 
         -- Setting Visual Properties
-        defaultFile = "Images/Back Button Unpressed.png",
-        overFile = "Images/Back Button Pressed.png",
+        defaultFile = "Images/BackButtonUnPressedYourName@2x.png",
+        overFile = "Images/BackButtonPressedYourName@2x.png",
+
+        width = 200,
+        height = 100,
 
         -- Setting Functional Properties
         onRelease = BackTransition

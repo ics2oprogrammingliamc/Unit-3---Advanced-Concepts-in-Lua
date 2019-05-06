@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------------------
 --
--- level1_screen.lua
+-- main_menu
 -- Title: SSG (SuperSlamGames)
 -- Name: Liam Csiffary
 -- Course: ICS2O/3C
@@ -41,9 +41,11 @@ soundOn = true
 -----------------------------------------------------------------------------------------
 
 local bkg_image
+
 local playButton
 local creditsButton
 local instructionsButton
+
 local muteButton
 local unmuteButton
 -----------------------------------------------------------------------------------------
@@ -64,6 +66,16 @@ local function Mute(touch)
         unmuteButton.isVisible = true
     end
 end
+
+local function UnMute(touch)
+    if (touch.phase == "ended") then
+        audio.resume(bkgMusicMM)
+        soundOn = true
+        muteButton.isVisible = true
+        unmuteButton.isVisible = false
+    end
+end
+
 -- Creating Transition Function to Credits Page
 local function CreditsTransition( )       
     composer.gotoScene( "credits_screen", {effect = "zoomInOutFade", time = 500})
@@ -78,6 +90,10 @@ end
 
 local function InstructionsTransition( )
     composer.gotoScene( "instructions_screen", {effect = "zoomInOutRotate", time = 1000})
+end
+
+local function LevelsScreenTransition( )
+    composer.gotoScene( "levels_screen", {effect = "zoomInOutRotate", time = 1000})
 end
 
 -- INSERT LOCAL FUNCTION DEFINITION THAT GOES TO INSTRUCTIONS SCREEN 
@@ -104,6 +120,15 @@ function scene:create( event )
     bkg_image.width = display.contentWidth
     bkg_image.height = display.contentHeight
 
+    muteButton = display.newImageRect("Images/Mute.png", 200, 200)
+    muteButton.x = display.contentWidth*1.5/10
+    muteButton.y = display.contentHeight*1.3/10
+    muteButton.isVisible = true
+
+    unmuteButton = display.newImageRect("Images/UnMute.png", 200, 200)
+    unmuteButton.x = display.contentWidth*1.5/10
+    unmuteButton.y = display.contentHeight*1.3/10
+    unmuteButton.isVisible = false
 
     -- Associating display objects with this scene 
     sceneGroup:insert( bkg_image )
@@ -161,8 +186,11 @@ function scene:create( event )
             y = display.contentHeight*7/8,
 
             -- Insert the images here
-            defaultFile = "Images/Instructions Button.png",
-            overFile = "Images/Instructions Button Pressed.png",
+            defaultFile = "Images/InstructionsButtonUnpressedTaishaunJ@2x.png",
+            overFile = "Images/InstructionsButtonPressedTaishaunJ@2x.png",
+
+            width = 200,
+            height = 100,
 
             -- When the button is released, call the Level1 screen transition function
             onRelease = InstructionsTransition       
@@ -172,20 +200,19 @@ function scene:create( event )
     levelsButton = widget.newButton( 
         {   
             -- Set its position on the screen relative to the screen size
-            x = display.contentWidth/6,
-            y = display.contentHeight*6/8,
+            x = display.contentWidth*1/8,
+            y = display.contentHeight*5/8,
 
             -- Insert the images here
             defaultFile = "Images/levels.png",
             overFile = "Images/levels.png",
 
-            width =  250, 
-            height = 125,
+            width =  200, 
+            height = 100,
 
             -- When the button is released, call the Level1 screen transition function
-            onRelease = Level1ScreenTransition          
+            onRelease = LevelsScreenTransition          
         } )
-
 
     -----------------------------------------------------------------------------------------
 
@@ -194,8 +221,9 @@ function scene:create( event )
     sceneGroup:insert( creditsButton )
     sceneGroup:insert( instructionsButton )
     sceneGroup:insert( levelsButton )
-    
-    -- INSERT INSTRUCTIONS BUTTON INTO SCENE GROUP
+    sceneGroup:insert( muteButton )
+    sceneGroup:insert( unmuteButton )
+
 
 end -- function scene:create( event )   
 
@@ -226,6 +254,8 @@ function scene:show( event )
     elseif ( phase == "did" ) then       
         
         bkgMusicMMChannel = audio.play(bkgMusicMM)
+        muteButton:addEventListener("touch", Mute)
+        unmuteButton:addEventListener("touch", UnMute)
     end
 
 end -- function scene:show( event )
@@ -253,6 +283,7 @@ function scene:hide( event )
 
     elseif ( phase == "did" ) then
         -- Called immediately after scene goes off screen.
+        muteButton:removeEventListener("touch", Mute)
     end
 
 end -- function scene:hide( event )
