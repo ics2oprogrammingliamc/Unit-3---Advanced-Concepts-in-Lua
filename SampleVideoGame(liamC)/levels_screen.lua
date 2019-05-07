@@ -27,7 +27,13 @@ scene = composer.newScene( sceneName ) -- This function doesn't accept a string,
 -- LOCAL VARIABLES
 -----------------------------------------------------------------------------------------
 local bkg_image
+
 local backButton
+
+local level1Button
+local level2Button
+local level3Button
+local level4Button
 -----------------------------------------------------------------------------------------
 -- Sounds
 -----------------------------------------------------------------------------------------
@@ -73,6 +79,81 @@ function scene:create( event )
     -- Send the background image to the back layer so all other objects can be on top
     bkg_image:toBack()
 
+        level1Button = widget.newButton( 
+        {   
+            -- Set its position on the screen relative to the screen size
+            x = display.contentWidth/2,
+            y = display.contentHeight*1/8,
+
+            -- Insert the images here
+            defaultFile = "Images/MathLevel1ButtonUnpressedYourName@2x.png",
+            overFile = "Images/MathLevel1ButtonPressedYourName@2x.png",
+
+            width =  250, 
+            height = 125,
+
+            -- When the button is released, call the Level1 screen transition function
+            onRelease = Level1ScreenTransition          
+        } )
+
+        sceneGroup:insert(level1Button)
+
+        level2Button = widget.newButton( 
+        {   
+            -- Set its position on the screen relative to the screen size
+            x = display.contentWidth/2,
+            y = display.contentHeight*2/8,
+
+            -- Insert the images here
+            defaultFile = "Images/ArtLevel2ButtonUnpressedYourName@2x.png",
+            overFile = "Images/ArtLevel2ButtonPressedYourName@2x.png",
+
+            width =  250, 
+            height = 125,
+
+            -- When the button is released, call the Level1 screen transition function
+            onRelease = Level1ScreenTransition          
+        } )
+
+        sceneGroup:insert(level2Button)
+
+        level3Button = widget.newButton( 
+        {   
+            -- Set its position on the screen relative to the screen size
+            x = display.contentWidth/2,
+            y = display.contentHeight*3/8,
+
+            -- Insert the images here
+            defaultFile = "Images/MathLevel3ButtonUnpressedYourName@2x.png",
+            overFile = "Images/MathLevel3ButtonPressedYourName@2x.png",
+
+            width =  250, 
+            height = 125,
+
+            -- When the button is released, call the Level1 screen transition function
+            onRelease = Level1ScreenTransition        
+        } )
+
+        sceneGroup:insert(level3Button)  
+
+        level4Button = widget.newButton( 
+        {   
+            -- Set its position on the screen relative to the screen size
+            x = display.contentWidth/2,
+            y = display.contentHeight*4/8,
+
+            -- Insert the images here
+            defaultFile = "Images/ArtLevel4ButtonUnpressedYourName@2x.png",
+            overFile = "Images/ArtLevel4ButtonPressedYourName@2x.png",
+
+            width =  250, 
+            height = 125,
+
+            -- When the button is released, call the Level1 screen transition function
+            onRelease = Level1ScreenTransition          
+        } )
+
+        sceneGroup:insert(level4Button)
     -----------------------------------------------------------------------------------------
     -- BUTTON WIDGETS
     -----------------------------------------------------------------------------------------

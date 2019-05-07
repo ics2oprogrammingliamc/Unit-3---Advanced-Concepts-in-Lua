@@ -96,6 +96,34 @@ local function LevelsScreenTransition( )
     composer.gotoScene( "levels_screen", {effect = "zoomInOutRotate", time = 1000})
 end
 
+local function AddCollisionListeners()
+    -- if character collides with ball, onCollision will be called
+    apple1.collision = onCollision
+    apple1:addEventListener( "collision" )
+    apple2.collision = onCollision
+    apple2:addEventListener( "collision" )
+    apple3.collision = onCollision
+    apple3:addEventListener( "collision" )
+    apple4.collision = onCollision
+    apple4:addEventListener( "collision" )
+    apple5.collision = onCollision
+    apple5:addEventListener( "collision" )
+    apple6.collision = onCollision
+    apple6:addEventListener( "collision" )
+    apple7.collision = onCollision
+    apple7:addEventListener( "collision" )
+    apple8.collision = onCollision
+    apple8:addEventListener( "collision" )
+    apple9.collision = onCollision
+    apple9:addEventListener( "collision" )
+    apple10.collision = onCollision
+    apple10:addEventListener( "collision" )
+    apple11.collision = onCollision
+    apple11:addEventListener( "collision" )
+
+    moose.collision = onCollision
+    moose:addEventListener( "collision" )
+end
 -- INSERT LOCAL FUNCTION DEFINITION THAT GOES TO INSTRUCTIONS SCREEN 
 
 -----------------------------------------------------------------------------------------
