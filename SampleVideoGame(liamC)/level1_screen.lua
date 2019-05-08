@@ -33,7 +33,7 @@ local scene = composer.newScene( sceneName )
 -- The local variables for this scene
 local bkg_image
 
-local moose
+local character
 
 -- create apples
 local apple1
@@ -47,6 +47,8 @@ local apple8
 local apple9
 local apple10
 local apple11
+
+local theApple
 
 local motionx = 0
 local motiony = 0
@@ -66,25 +68,25 @@ local dArrow
 -- when right arrow is touched move right
 local function right (touch)
     motionx = SPEED
-    moose.xScale = -1
+    character.xScale = -1
 end
 
 -- when right arrow is touched move right
 local function left (touch)
     motionx = SPEEDR
-    moose.xScale = -1
+    character.xScale = -1
 end
 
 -- when right arrow is touched move right
 local function up (touch)
-    motionx = SPEED
-    moose.yScale = +1
+    motiony = SPEED
+    character.yScale = -1
 end
 
 -- when right arrow is touched move right
 local function down (touch)
-    motionx = SPEED
-    moose.yScale = -1
+    motioxy = SPEEDR
+    character.yScale = -1
 end
 
 local function movePlayerX (event)
@@ -99,6 +101,157 @@ local function stop (event)
     if (event.phase == "ended") then
         motionx = 0
         motiony = 0
+    end
+end
+
+local function AddArrowEventListeners()
+    rArrow:addEventListener("touch", right)
+    lArrow:addEventListener("touch", left)
+    uArrow:addEventListener("touch", up)
+    dArrow:addEventListener("touch", down)
+end
+
+local function RemoveArrowEventListeners()
+    rArrow:removeEventListener("touch", right)
+    lArrow:removeEventListener("touch", left)
+    uArrow:removeEventListener("touch", up)
+    dArrow:removeEventListener("touch", down)
+end
+
+local function AddRuntimeListeners()
+    Runtime:addEventListener("enterframe", movePlayerY)
+    Runtime:addEventListener("enterframe", movePlayerX)
+    Runtime:removeEventListener("touch", stop)
+end
+
+local function ReplaceCharacter()
+    character = display.newImageRect("Images/MooseCharacterLiamC.png", 100, 150)
+    character.x = display.contentWidth * 0.5 / 8
+    character.y = display.contentHeight  * 0.1 / 3
+    character.width = 75
+    character.height = 100
+    character.myName = "Moose"
+
+    -- intialize horizontal movement of character
+    motionx = 0
+
+    -- prevent character from being able to tip over
+    character.isFixedRotation = true
+
+    -- add back arrow listeners
+    AddArrowEventListeners()
+
+    -- add back runtime listeners
+    AddRuntimeListeners()
+end
+
+
+local function MakeAppleVisible()
+    apple1.isVisible = true
+    apple2.isVisible = true
+    apple3.isVisible = true
+    apple4.isVisible = true
+    apple5.isVisible = true
+    apple6.isVisible = true
+    apple7.isVisible = true
+    apple8.isVisible = true
+    apple9.isVisible = true
+    apple10.isVisible = true
+    apple11.isVisible = true
+
+    moose.isVisible = true
+end
+
+local function onCollision( self, event )
+    -- for testing purposes
+    --print( event.target )        --the first object in the collision
+    --print( event.other )         --the second object in the collision
+    --print( event.selfElement )   --the element (number) of the first object which was hit in the collision
+    --print( event.otherElement )  --the element (number) of the second object which was hit in the collision
+    --print( event.target.myName .. ": collision began with " .. event.other.myName )
+
+    if ( event.phase == "began" ) then
+
+        --Pop sound
+        popSoundChannel = audio.play(popSound)
+
+        if  (event.target.myName == "apple1") or 
+            (event.target.myName == "apple2") or
+            (event.target.myName == "apple3") or 
+            (event.target.myName == "apple4") or
+            (event.target.myName == "apple5") or 
+            (event.target.myName == "apple6") or
+            (event.target.myName == "apple7") or 
+            (event.target.myName == "apple8") or
+            (event.target.myName == "apple9") then
+
+            -- add sound effect here
+
+            -- remove runtime listeners that move the character
+            RemoveArrowEventListeners()
+            RemoveRuntimeListeners()
+
+            -- remove the character from the display
+            display.remove(character)
+
+            -- decrease number of lives
+            numLives = numLives - 1
+
+            -- make sound for when the character gets hit
+            hitSoundChannel = audio.play(hitSound)
+
+            if (numLives == 1) then
+                -- update hearts
+                heart1.isVisible = true
+                heart2.isVisible = false
+                timer.performWithDelay(200, ReplaceCharacter) 
+
+            elseif (numLives == 0) then
+                -- update hearts
+                heart1.isVisible = false
+                heart2.isVisible = false
+                timer.performWithDelay(200, YouLoseTransition)
+            end
+        end
+
+        if  (event.target.myName == "apple1") or
+            (event.target.myName == "apple2") or
+            (event.target.myName == "apple3") or
+            (event.target.myName == "apple4") or  
+            (event.target.myName == "apple5") or
+            (event.target.myName == "apple6") or 
+            (event.target.myName == "apple7") or
+            (event.target.myName == "apple8") or 
+            (event.target.myName == "apple9") or
+            (event.target.myName == "apple10") or             
+            (event.target.myName == "apple11") then
+
+            -- get the ball that the user hit
+            theApple = event.target
+
+            -- stop the character from moving
+            motionx = 0
+
+            -- make the character invisible
+            character.isVisible = false
+
+            -- show overlay with math question
+            composer.showOverlay( "level1_question", { isModal = true, effect = "fade", time = 100})
+
+            -- Increment questions answered
+            questionsAnswered = questionsAnswered + 1
+        end
+
+        if (questionsAnsered  ~= -5) then
+            print(questionsAnswered)
+            --check to see if the user has answered 5 questions
+            if (questionsAnswered == 3) then
+                -- after getting 3 questions right, go to the you win screen
+                composer.gotoScene( "you_win" )
+                winSoundChannel = audio.play(winSound)
+            end
+        end        
+
     end
 end
 
@@ -148,9 +301,24 @@ local function RemoveCollisionListeners()
 end    
 
 
+
 -----------------------------------------------------------------------------------------
 -- GLOBAL SCENE FUNCTIONS
 -----------------------------------------------------------------------------------------
+
+function ResumeGame()
+
+        -- make character visible again
+    character.isVisible = true
+    
+    if (questionsAnswered > 0) then
+        if (theApple ~= nil) and (theApple.isBodyActive == true) then
+            physics.removeBody(theApple)
+            theApple.isVisible = false
+        end
+    end
+
+end
 
 -- The function called when the screen doesn't exist
 function scene:create( event )
@@ -234,8 +402,40 @@ function scene:create( event )
     apple11.y = 730
     apple11:scale(.3,.3)
 
+    --Insert the right arrow
+    rArrow = display.newImageRect("SampleVideoGameImages/RightArrowUnpressed.png", 100, 50)
+    rArrow.x = display.contentWidth * 9.2 / 10
+    rArrow.y = display.contentHeight * 9.5 / 10
+  
+    sceneGroup:insert(rArrow)
+
+    -- insert image fpor up arrow
+    uArrow = display.newImageRect("SampleVideoGameImages/UpArrowUnpressed.png", 50, 100)
+    uArrow.x = display.contentWidth * 8.2 / 10
+    uArrow.y = display.contentHeight * 8.5 / 10
+
+    -- Insert objects into the scene group in order to ONLY be associated with this scene
+    sceneGroup:insert( uArrow )
 
 
+    lArrow = display.newImageRect("SampleVideoGameImages/LeftArrowUnpressed.png", 100, 50)
+    lArrow.x = display.contentWidth * 7.2 / 10
+    lArrow.y = display.contentHeight * 9.5 / 10
+
+    sceneGroup:insert( lArrow )
+
+
+    dArrow = display.newImageRect("SampleVideoGameImages/LeftArrowUnpressed.png", 100, 50)
+    dArrow.x = display.contentWidth * 7.2 / 10
+    dArrow.y = display.contentHeight * 9.5 / 10
+
+    sceneGroup:insert( dArrow )
+
+
+
+
+
+ 
 end --function scene:create( event )
 
 -----------------------------------------------------------------------------------------
@@ -259,6 +459,19 @@ function scene:show( event )
         -- Called when the scene is now on screen.
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.
+
+
+        questionsAnswered = 0
+
+        -- make all soccer balls visible
+        MakeAppleVisible()
+
+        -- add collision listeners to objects
+        AddCollisionListeners()
+
+        -- create the character, add physics bodies and runtime listeners
+        ReplaceCharacter() 
+
 
     end
 
