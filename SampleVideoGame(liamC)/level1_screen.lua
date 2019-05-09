@@ -54,12 +54,21 @@ local motionx = 0
 local motiony = 0
 local SPEED = 6
 local SPEEDR = -6
-
+local LINEAR_VELOCITY = -100
+local GRAVITY = 4
 
 local rArrow
 local lArrow
 local uArrow
 local dArrow
+
+local heart1
+local heart2
+
+local leftW 
+local rightW
+local topW
+local floor
 
 ----------------------------------------------------------------------
 -- LOCAL SCENE FUNCTIONS
@@ -67,33 +76,30 @@ local dArrow
 
 -- when right arrow is touched move right
 local function right (touch)
+    print("***Called right")
     motionx = SPEED
-    character.xScale = -1
+    character.xScale = 1
 end
 
 -- when right arrow is touched move right
 local function left (touch)
-    motionx = SPEEDR
+    motionx = -SPEED
     character.xScale = -1
 end
 
 -- when right arrow is touched move right
 local function up (touch)
-    motiony = SPEED
-    character.yScale = -1
+    motiony = -SPEED
 end
 
 -- when right arrow is touched move right
 local function down (touch)
-    motioxy = SPEEDR
-    character.yScale = -1
+    motioxy = SPEED
 end
 
-local function movePlayerX (event)
+local function movePlayer (event)
+    print ("***Called movePlayer")
     character.x = character.x + motionx
-end
-
-local function movePlayerY (event)
     character.y = character.y + motiony
 end
 
@@ -105,6 +111,7 @@ local function stop (event)
 end
 
 local function AddArrowEventListeners()
+    print ("***Called AddArrowEventListeners")
     rArrow:addEventListener("touch", right)
     lArrow:addEventListener("touch", left)
     uArrow:addEventListener("touch", up)
@@ -119,14 +126,20 @@ local function RemoveArrowEventListeners()
 end
 
 local function AddRuntimeListeners()
-    Runtime:addEventListener("enterframe", movePlayerY)
-    Runtime:addEventListener("enterframe", movePlayerX)
+    print ("***Called AddRuntimeListeners")
+    Runtime:addEventListener("enterFrame", movePlayer)
+    Runtime:addEventListener("touch", stop)
+end
+
+local function RemoveRuntimeListeners()
+    Runtime:removeEventListener("enterFrame", movePlayer)
     Runtime:removeEventListener("touch", stop)
 end
 
 local function ReplaceCharacter()
+    print ("***Called ReplaceCharacter")
     character = display.newImageRect("Images/MooseCharacterLiamC.png", 100, 150)
-    character.x = display.contentWidth * 0.5 / 8
+    character.x = display.contentWidth * .5 / 8
     character.y = display.contentHeight  * 0.1 / 3
     character.width = 75
     character.height = 100
@@ -134,6 +147,9 @@ local function ReplaceCharacter()
 
     -- intialize horizontal movement of character
     motionx = 0
+
+    -- add physics body
+    physics.addBody( character, "dynamic", { density=0, friction=0.5, bounce=0, rotation=0 } )
 
     -- prevent character from being able to tip over
     character.isFixedRotation = true
@@ -158,8 +174,11 @@ local function MakeAppleVisible()
     apple9.isVisible = true
     apple10.isVisible = true
     apple11.isVisible = true
+end
 
-    moose.isVisible = true
+local function MakeHeartsVisible()
+    heart1.isVisible = true
+    heart2.isVisible = true
 end
 
 local function onCollision( self, event )
@@ -279,9 +298,6 @@ local function AddCollisionListeners()
     apple10:addEventListener( "collision" )
     apple11.collision = onCollision
     apple11:addEventListener( "collision" )
-
-    moose.collision = onCollision
-    moose:addEventListener( "collision" )
 end
 
 local function RemoveCollisionListeners()
@@ -300,6 +316,25 @@ local function RemoveCollisionListeners()
     moose:removeEventListener( "collision" )
 end    
 
+local function AddPhysicsBodies()
+    physics.addBody(ball1, "static",  {density=0, friction=0, bounce=0} )
+    physics.addBody(ball2, "static",  {density=0, friction=0, bounce=0} )
+    physics.addBody(ball3, "static",  {density=0, friction=0, bounce=0} )
+
+    physics.addBody(leftW, "static", {density=1, friction=0.3, bounce=0.2} )
+    physics.addBody(rightW, "static", {density=1, friction=0.3, bounce=0.2} ) 
+    physics.addBody(topW, "static", {density=1, friction=0.3, bounce=0.2} )
+    physics.addBody(floor, "static", {density=1, friction=0.3, bounce=0.2} )
+
+end
+
+local function RemovePhysicsBodies()
+    physics.removeBody(leftW)
+    physics.removeBody(rightW)
+    physics.removeBody(topW)
+    physics.removeBody(floor)
+ 
+end
 
 
 -----------------------------------------------------------------------------------------
@@ -335,16 +370,8 @@ function scene:create( event )
     bkg_image.width = display.contentWidth
     bkg_image.height = display.contentHeight
 
-    -- Send the background image to the back layer so all other objects can be on top
-    bkg_image:toBack()
-
         -- Insert background image into the scene group in order to ONLY be associated with this scene
     sceneGroup:insert( bkg_image )    
-
-    moose = display.newImageRect("Images/MooseCharacterLiamC.png", 200, 100)
-    moose.x = 190
-    moose.y = 650
-    moose:scale(1.8,2.8)
 
     -- create apples
     apple1 = display.newImageRect("Images/ApplesNathan@2x.png", 100, 100)
@@ -403,14 +430,15 @@ function scene:create( event )
     apple11:scale(.3,.3)
 
     --Insert the right arrow
-    rArrow = display.newImageRect("SampleVideoGameImages/RightArrowUnpressed.png", 100, 50)
+    rArrow = display.newImageRect("Images/RightArrowUnpressed.png", 100, 50)
     rArrow.x = display.contentWidth * 9.2 / 10
     rArrow.y = display.contentHeight * 9.5 / 10
+   
   
     sceneGroup:insert(rArrow)
 
     -- insert image fpor up arrow
-    uArrow = display.newImageRect("SampleVideoGameImages/UpArrowUnpressed.png", 50, 100)
+    uArrow = display.newImageRect("Images/UpArrowUnpressed.png", 50, 100)
     uArrow.x = display.contentWidth * 8.2 / 10
     uArrow.y = display.contentHeight * 8.5 / 10
 
@@ -418,20 +446,47 @@ function scene:create( event )
     sceneGroup:insert( uArrow )
 
 
-    lArrow = display.newImageRect("SampleVideoGameImages/LeftArrowUnpressed.png", 100, 50)
+    lArrow = display.newImageRect("Images/LeftArrowUnpressed.png", 100, 50)
     lArrow.x = display.contentWidth * 7.2 / 10
     lArrow.y = display.contentHeight * 9.5 / 10
 
     sceneGroup:insert( lArrow )
 
 
-    dArrow = display.newImageRect("SampleVideoGameImages/LeftArrowUnpressed.png", 100, 50)
+    dArrow = display.newImageRect("Images/LeftArrowUnpressed.png", 100, 50)
     dArrow.x = display.contentWidth * 7.2 / 10
-    dArrow.y = display.contentHeight * 9.5 / 10
+    dArrow.y = display.contentHeight * 2 / 10
+
+    dArrow.isVisible = false
 
     sceneGroup:insert( dArrow )
 
+    --WALLS--
 
+    leftW = display.newLine( 0, 0, 0, display.contentHeight)
+    leftW.isVisible = true
+
+     -- Insert objects into the scene group in order to ONLY be associated with this scene
+     sceneGroup:insert( leftW )
+
+    rightW = display.newLine( 0, 0, 0, display.contentHeight)
+    rightW.isVisible = true
+
+     -- Insert objects into the scene group in order to ONLY be associated with this scene
+    sceneGroup:insert( rightW )
+
+    topW = display.newLine( 0, 0, display.contentWidth, 0)
+    topW.isVisible = true
+
+    -- Insert objects into the scene group in order to ONLY be associated with this scene
+    sceneGroup:insert( topW )
+
+    floor = display.newImageRect("Images/Ground.png", 1000, 100)
+    floor.x = display.contentCenterX
+    floor.y = display.contentHeight * 2.1/2
+    
+    -- Insert objects into the scene group in order to ONLY be associated with this scene
+    sceneGroup:insert( floor )
 
 
 
@@ -453,6 +508,7 @@ function scene:show( event )
 
         -- Called when the scene is still off screen (but is about to come on screen).
     -----------------------------------------------------------------------------------------
+        physics.start()
 
     elseif ( phase == "did" ) then
 
@@ -471,6 +527,8 @@ function scene:show( event )
 
         -- create the character, add physics bodies and runtime listeners
         ReplaceCharacter() 
+
+        AddPhysicsBodies()
 
 
     end
@@ -497,6 +555,13 @@ function scene:hide( event )
 
     elseif ( phase == "did" ) then
         -- Called immediately after scene goes off screen.
+        RemoveCollisionListeners()
+        RemovePhysicsBodies()
+
+        physics.stop()
+        RemoveArrowEventListeners()
+        RemoveRuntimeListeners()
+        display.remove(character)
     end
 
 end --function scene:hide( event )

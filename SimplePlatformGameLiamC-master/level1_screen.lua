@@ -517,14 +517,13 @@ function scene:create( event )
     leftW = display.newLine( 0, 0, 0, display.contentHeight)
     leftW.isVisible = true
 
-    -- Insert objects into the scene group in order to ONLY be associated with this scene
-    sceneGroup:insert( leftW )
+     -- Insert objects into the scene group in order to ONLY be associated with this scene
+     sceneGroup:insert( leftW )
 
     rightW = display.newLine( 0, 0, 0, display.contentHeight)
-    rightW.x = 1024
     rightW.isVisible = true
 
-    -- Insert objects into the scene group in order to ONLY be associated with this scene
+     -- Insert objects into the scene group in order to ONLY be associated with this scene
     sceneGroup:insert( rightW )
 
     topW = display.newLine( 0, 0, display.contentWidth, 0)
