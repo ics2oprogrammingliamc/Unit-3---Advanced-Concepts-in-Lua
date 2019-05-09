@@ -204,8 +204,8 @@ function scene:create( event )
             y = display.contentHeight*5/8,
 
             -- Insert the images here
-            defaultFile = "Images/levels.png",
-            overFile = "Images/levels.png",
+            defaultFile = "Images/LevelsButtonUnpressedYourName@2x.png",
+            overFile = "Images/LevelsButtonPressedYourName@2x.png",
 
             width =  200, 
             height = 100,
@@ -284,6 +284,7 @@ function scene:hide( event )
     elseif ( phase == "did" ) then
         -- Called immediately after scene goes off screen.
         muteButton:removeEventListener("touch", Mute)
+        unmuteButton:removeEventListener("touch", UnMute)
     end
 
 end -- function scene:hide( event )

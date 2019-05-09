@@ -34,25 +34,61 @@ local level1Button
 local level2Button
 local level3Button
 local level4Button
+
+local muteButton
+local unmuteButton
 -----------------------------------------------------------------------------------------
 -- Sounds
 -----------------------------------------------------------------------------------------
 
 local bkgMusicLevel1 = audio.loadStream("Sounds/level1Music.mp3")
-local bkgMusicLevel1Channel = audio.play(bkgMusic, { channel=2, loops=-1 } )
+local bkgMusicLevel1Channel = audio.play(bkgMusicLevel1, { channel=2, loops=-1 } )
 
 
 -----------------------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
 -----------------------------------------------------------------------------------------
 
+local function Mute(touch)
+    if (touch.phase == "ended") then
+        audio.pause(bkgMusicMM)
+        soundOn = false
+        muteButton.isVisible = false
+        unmuteButton.isVisible = true
+    end
+end
+
+local function UnMute(touch)
+    if (touch.phase == "ended") then
+        audio.resume(bkgMusicMM)
+        soundOn = true
+        muteButton.isVisible = true
+        unmuteButton.isVisible = false
+    end
+end
 
 -- Creating Transitioning Function back to main menu
 local function BackTransition( )
     composer.gotoScene( "main_menu", {effect = "zoomOutInFadeRotate", time = 500})
 end
 
+------------------------------------------------------ TRANSITIONS FOR LEVELS --------------------------------------------------------
 
+local function Level1ScreenTransition()
+    composer.gotoScene( "level1_screen", {effect = "zoomOutInFadeRotate", time = 500} ) -- change transition if wanted
+end
+
+local function Level2ScreenTransition()
+    composer.gotoScene( "level2_screen", {effect = "zoomOutInFadeRotate", time = 500} ) -- change transition if wanted
+end
+
+local function Level3ScreenTransition()
+    composer.gotoScene( "level3_screen", {effect = "zoomOutInFadeRotate", time = 500} ) -- change transition if wanted    
+end
+
+local function Level4ScreenTransition()
+    composer.gotoScene( "level4_screen", {effect = "zoomOutInFadeRotate", time = 500} ) -- change transition if wanted    
+end
 -----------------------------------------------------------------------------------------
 -- GLOBAL SCENE FUNCTIONS
 -----------------------------------------------------------------------------------------
@@ -72,6 +108,16 @@ function scene:create( event )
     bkg_image.y = display.contentCenterY
     bkg_image.width = display.contentWidth
     bkg_image.height = display.contentHeight
+
+    muteButton = display.newImageRect("Images/Mute.png", 200, 200)
+    muteButton.x = display.contentWidth*1.5/10
+    muteButton.y = display.contentHeight*1.3/10
+    muteButton.isVisible = true
+
+    unmuteButton = display.newImageRect("Images/UnMute.png", 200, 200)
+    unmuteButton.x = display.contentWidth*1.5/10
+    unmuteButton.y = display.contentHeight*1.3/10
+    unmuteButton.isVisible = false
 
     -- Associating display objects with this scene 
     sceneGroup:insert( bkg_image )
@@ -96,13 +142,11 @@ function scene:create( event )
             onRelease = Level1ScreenTransition          
         } )
 
-        sceneGroup:insert(level1Button)
-
         level2Button = widget.newButton( 
         {   
             -- Set its position on the screen relative to the screen size
             x = display.contentWidth/2,
-            y = display.contentHeight*2/8,
+            y = display.contentHeight*3/8,
 
             -- Insert the images here
             defaultFile = "Images/ArtLevel2ButtonUnpressedYourName@2x.png",
@@ -112,16 +156,14 @@ function scene:create( event )
             height = 125,
 
             -- When the button is released, call the Level1 screen transition function
-            onRelease = Level1ScreenTransition          
+            onRelease = Level2ScreenTransition          
         } )
-
-        sceneGroup:insert(level2Button)
 
         level3Button = widget.newButton( 
         {   
             -- Set its position on the screen relative to the screen size
             x = display.contentWidth/2,
-            y = display.contentHeight*3/8,
+            y = display.contentHeight*5/8,
 
             -- Insert the images here
             defaultFile = "Images/MathLevel3ButtonUnpressedYourName@2x.png",
@@ -131,16 +173,14 @@ function scene:create( event )
             height = 125,
 
             -- When the button is released, call the Level1 screen transition function
-            onRelease = Level1ScreenTransition        
+            onRelease = Level3ScreenTransition        
         } )
-
-        sceneGroup:insert(level3Button)  
 
         level4Button = widget.newButton( 
         {   
             -- Set its position on the screen relative to the screen size
             x = display.contentWidth/2,
-            y = display.contentHeight*4/8,
+            y = display.contentHeight*7/8,
 
             -- Insert the images here
             defaultFile = "Images/ArtLevel4ButtonUnpressedYourName@2x.png",
@@ -150,10 +190,16 @@ function scene:create( event )
             height = 125,
 
             -- When the button is released, call the Level1 screen transition function
-            onRelease = Level1ScreenTransition          
+            onRelease = Level4ScreenTransition          
         } )
 
+        sceneGroup:insert(level1Button)
+        sceneGroup:insert(level2Button)
+        sceneGroup:insert(level3Button)  
         sceneGroup:insert(level4Button)
+
+        sceneGroup:insert( muteButton )
+        sceneGroup:insert( unmuteButton )
     -----------------------------------------------------------------------------------------
     -- BUTTON WIDGETS
     -----------------------------------------------------------------------------------------
@@ -212,6 +258,8 @@ function scene:show( event )
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.
         bkgMusicLevel1Channel = audio.play(bkgMusic)
+        muteButton:addEventListener("touch", Mute)
+        unmuteButton:addEventListener("touch", UnMute)        
 
     end
 
@@ -274,5 +322,3 @@ scene:addEventListener( "destroy", scene )
 -----------------------------------------------------------------------------------------
 
 return scene
-
-

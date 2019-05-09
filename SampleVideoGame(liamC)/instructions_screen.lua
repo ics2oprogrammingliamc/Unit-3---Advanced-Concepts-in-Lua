@@ -29,6 +29,8 @@ scene = composer.newScene( sceneName ) -- This function doesn't accept a string,
 local bkg_image
 local backButton
 
+local muteButton
+local unmuteButton
 -----------------------------------------------------------------------------------------
 -- Sounds
 -----------------------------------------------------------------------------------------
@@ -45,7 +47,23 @@ local function BackTransition( )
     composer.gotoScene( "main_menu", {effect = "zoomOutInFadeRotate", time = 500})
 end
 
+local function Mute(touch)
+    if (touch.phase == "ended") then
+        audio.pause(bkgMusicMM)
+        soundOn = false
+        muteButton.isVisible = false
+        unmuteButton.isVisible = true
+    end
+end
 
+local function UnMute(touch)
+    if (touch.phase == "ended") then
+        audio.resume(bkgMusicMM)
+        soundOn = true
+        muteButton.isVisible = true
+        unmuteButton.isVisible = false
+    end
+end
 -----------------------------------------------------------------------------------------
 -- GLOBAL SCENE FUNCTIONS
 -----------------------------------------------------------------------------------------
@@ -72,6 +90,16 @@ function scene:create( event )
 
     -- Send the background image to the back layer so all other objects can be on top
     bkg_image:toBack()
+
+    muteButton = display.newImageRect("Images/Mute.png", 200, 200)
+    muteButton.x = display.contentWidth*1.5/10
+    muteButton.y = display.contentHeight*1.3/10
+    muteButton.isVisible = true
+
+    unmuteButton = display.newImageRect("Images/UnMute.png", 200, 200)
+    unmuteButton.x = display.contentWidth*1.5/10
+    unmuteButton.y = display.contentHeight*1.3/10
+    unmuteButton.isVisible = false
 
     -----------------------------------------------------------------------------------------
     -- BUTTON WIDGETS
@@ -104,7 +132,9 @@ function scene:create( event )
 
     -- Associating Buttons with this scene
     sceneGroup:insert( backButton )
-    
+    sceneGroup:insert( muteButton )
+    sceneGroup:insert( unmuteButton )
+
 end --function scene:create( event )
 
 -----------------------------------------------------------------------------------------
@@ -131,6 +161,9 @@ function scene:show( event )
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.
         bkgMusicInstructionsChannel = audio.play(bkgMusicInstructions) 
+        muteButton:addEventListener("touch", Mute)
+        unmuteButton:addEventListener("touch", UnMute)
+        
     end
 
 end -- function scene:show( event )
@@ -192,5 +225,3 @@ scene:addEventListener( "destroy", scene )
 -----------------------------------------------------------------------------------------
 
 return scene
-
-
