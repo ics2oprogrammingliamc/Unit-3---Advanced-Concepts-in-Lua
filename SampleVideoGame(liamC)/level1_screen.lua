@@ -86,7 +86,6 @@ local winSoundChannel
 
 -- when right arrow is touched move right
 local function right (touch)
-    print("***Called right")
     motionx = SPEED
     character.xScale = 1
 end
@@ -103,7 +102,6 @@ local function up (touch)
 end
 
 local function movePlayer (event)
-    print ("***Called movePlayer")
     character.x = character.x + motionx
     character.y = character.y + motiony
 end
@@ -116,7 +114,6 @@ local function stop (event)
 end
 
 local function AddArrowEventListeners()
-    print ("***Called AddArrowEventListeners")
     rArrow:addEventListener("touch", right)
     lArrow:addEventListener("touch", left)
     uArrow:addEventListener("touch", up)
@@ -129,7 +126,6 @@ local function RemoveArrowEventListeners()
 end
 
 local function AddRuntimeListeners()
-    print ("***Called AddRuntimeListeners")
     Runtime:addEventListener("enterFrame", movePlayer)
     Runtime:addEventListener("touch", stop)
 end
@@ -171,7 +167,6 @@ local function MakeAppleVisible()
     apple3.isVisible = true
     apple4.isVisible = true
     apple5.isVisible = true
-    apple6.isVisible = true
 end
 
 local function MakeHeartsVisible()
@@ -185,7 +180,6 @@ local function YouLoseTransition()
     apple3.isVisible = false
     apple4.isVisible = false
     apple5.isVisible = false
-    apple6.isVisible = false
     loseSoundChannel = audio.play(loseSound)
     composer.gotoScene( "you_lose" )
 end
@@ -204,11 +198,9 @@ local function onCollision( self, event )
             (event.target.myName == "no apple2") or
             (event.target.myName == "no apple3") or 
             (event.target.myName == "no apple4") or
-            (event.target.myName == "no apple5") or 
-            (event.target.myName == "no apple6") or
-            (event.target.myName == "no apple7") or 
-            (event.target.myName == "no apple8") or
-            (event.target.myName == "no apple9") then ------------- NONE OF THIS SHOULD HAPPEN AS YOU NEVER LOSE LIVES -----------------------------
+            (event.target.myName == "no apple5") then
+
+    ------------- NONE OF THIS SHOULD HAPPEN AS YOU NEVER LOSE LIVES -----------------------------
 
             -- add sound effect here
 
@@ -266,7 +258,7 @@ local function onCollision( self, event )
         if (event.target.myName == "door") then
             print(questionsAnswered)
             --check to see if the user has answered 5 questions
-            if (questionsAnswered == 6) then
+            if (questionsAnswered == 5) then
                 -- after getting 3 questions right, go to the you win screen
                 winSoundChannel = audio.play(winSound)
                 composer.gotoScene( "you_win" )
@@ -288,8 +280,6 @@ local function AddCollisionListeners()
     apple4:addEventListener( "collision" )
     apple5.collision = onCollision
     apple5:addEventListener( "collision" )
-    apple6.collision = onCollision
-    apple6:addEventListener( "collision" )
 
     door.collision = onCollision
     door:addEventListener( "collision" )    
@@ -302,7 +292,6 @@ local function RemoveCollisionListeners()
     apple3:removeEventListener( "collision" )
     apple4:removeEventListener( "collision" )
     apple5:removeEventListener( "collision" )
-    apple6:removeEventListener( "collision" )
 
     door:removeEventListener( "collision" )
 end     
@@ -318,7 +307,6 @@ local function AddPhysicsBodies()
     physics.addBody(apple3, "static", {density=0, friction=0, bounce=0} ) 
     physics.addBody(apple4, "static", {density=0, friction=0, bounce=0} ) 
     physics.addBody(apple5, "static", {density=0, friction=0, bounce=0} ) 
-    physics.addBody(apple6, "static", {density=0, friction=0, bounce=0} ) 
 
     physics.addBody(door, "static", {density=1, friction=0.3, bounce=0.2} )
 
@@ -362,7 +350,7 @@ function scene:create( event )
     -----------------------------------------------------------------------------------------
 
     -- Insert the background image
-    bkg_image = display.newImageRect("Images/Level1ScreenNathan@2x.png", display.contentWidth, display.contentHeight)
+    bkg_image = display.newImageRect("Images/Level1Screen2Nathan@2x.png", display.contentWidth, display.contentHeight)
     bkg_image.x = display.contentCenterX
     bkg_image.y = display.contentCenterY
     bkg_image.width = display.contentWidth
@@ -373,47 +361,40 @@ function scene:create( event )
 
     -- create apples
     apple1 = display.newImageRect("Images/ApplesNathan@2x.png", 100, 100)
-    apple1.x = 390
-    apple1.y = 730
+    apple1.x = 425
+    apple1.y = 724
     apple1:scale(.3,.3)
     apple1.myName = "apple1"
 
     apple2 = display.newImageRect("Images/ApplesNathan@2x.png", 100, 100)
-    apple2.x = 490
-    apple2.y = 640
+    apple2.x = 537
+    apple2.y = 725
     apple2:scale(.3,.3)
     apple2.myName = "apple2"
 
     apple3 = display.newImageRect("Images/ApplesNathan@2x.png", 100, 100)
-    apple3.x = 530
-    apple3.y = 730
+    apple3.x = 640
+    apple3.y = 725
     apple3:scale(.3,.3)
     apple3.myName = "apple3"
 
     apple4 = display.newImageRect("Images/ApplesNathan@2x.png", 100, 100)
-    apple4.x = 630
-    apple4.y = 670
+    apple4.x = 750
+    apple4.y = 725
     apple4:scale(.3,.3)
     apple4.myName = "apple4"
 
     apple5 = display.newImageRect("Images/ApplesNathan@2x.png", 100, 100)
-    apple5.x = 660
-    apple5.y = 730
+    apple5.x = 870
+    apple5.y = 725
     apple5:scale(.3,.3)
     apple5.myName = "apple5"
-
-    apple6 = display.newImageRect("Images/ApplesNathan@2x.png", 100, 100)
-    apple6.x = 750
-    apple6.y = 680
-    apple6:scale(.3,.3)
-    apple6.myName = "apple6"
 
     sceneGroup:insert(apple1)
     sceneGroup:insert(apple2)
     sceneGroup:insert(apple3)
     sceneGroup:insert(apple4)
     sceneGroup:insert(apple5)
-    sceneGroup:insert(apple6)
 
     --Insert the right arrow
     rArrow = display.newImageRect("Images/RightArrowUnpressed.png", 100, 50)
@@ -429,8 +410,8 @@ function scene:create( event )
     lArrow.x = display.contentWidth * 7.2 / 10
     lArrow.y = display.contentHeight * 9.5 / 10
 
-    door = display.newImage("Images/Level-1Door.png", 200, 200)
-    door.x = display.contentWidth*7/8 
+    door = display.newImage("Images/Level-1Door.png", 50, 50)
+    door.x = display.contentWidth*1/8 
     door.y = display.contentHeight*6.1/7
     door.myName = "door"
 
@@ -463,8 +444,6 @@ function scene:create( event )
     sceneGroup:insert( lArrow )
     sceneGroup:insert( rArrow )
     sceneGroup:insert( uArrow ) 
-
-
 
  
 end --function scene:create( event )
