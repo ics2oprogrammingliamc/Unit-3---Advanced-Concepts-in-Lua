@@ -64,8 +64,16 @@ local leftW
 local rightW
 local topW
 local floor
+local appleW
 
 local door
+
+
+-- timer vars
+local timer
+local savedTime = 10
+
+local platform
 
 -----------------------------------------------------------------------------------------
 -- SOUND VARIABLES
@@ -139,7 +147,7 @@ local function ReplaceCharacter()
     print ("***Called ReplaceCharacter")
     character = display.newImageRect("Images/MooseCharacterLiamC.png", 100, 150)
     character.x = display.contentWidth * 1 / 8
-    character.y = display.contentHeight  * 0.1 / 3
+    character.y = display.contentHeight  * 2.5 / 3
     character.width = 240
     character.height = 160
     character.myName = "Moose"
@@ -182,6 +190,10 @@ local function YouLoseTransition()
     apple5.isVisible = false
     loseSoundChannel = audio.play(loseSound)
     composer.gotoScene( "you_lose" )
+end
+
+local function RemoveWallPhysics()
+    physics.removeBody(appleW)
 end
 
 local function onCollision( self, event )
@@ -254,6 +266,10 @@ local function onCollision( self, event )
             -- Increment questions answered
             questionsAnswered = questionsAnswered + 1
         end
+        if (questionsAnswered == 5) then
+            print("invisaWall")
+            RemoveWallPhysics()
+        end
 
         if (event.target.myName == "door") then
             print(questionsAnswered)
@@ -297,10 +313,13 @@ local function RemoveCollisionListeners()
 end     
 
 local function AddPhysicsBodies()
+    physics.addBody( platform, "static", { density=1.0, friction=0.3, bounce=0.2 } )
+
     physics.addBody(leftW, "static", {density=1, friction=0.3, bounce=0.2} )
     physics.addBody(rightW, "static", {density=1, friction=0.3, bounce=0.2} ) 
     physics.addBody(topW, "static", {density=1, friction=0.3, bounce=0.2} )
     physics.addBody(floor, "static", {density=1, friction=0.3, bounce=0.2} )
+    physics.addBody(appleW, "static", {density=1, friction=0.3, bounce=0.2} )
 
     physics.addBody(apple1, "static", {density=0, friction=0, bounce=0} ) 
     physics.addBody(apple2, "static", {density=0, friction=0, bounce=0} ) 
@@ -313,10 +332,13 @@ local function AddPhysicsBodies()
 end
 
 local function RemovePhysicsBodies()
+physics.removeBody(platform)
+
     physics.removeBody(leftW)
     physics.removeBody(rightW)
     physics.removeBody(topW)
     physics.removeBody(floor)
+    physics.removeBody(appleW)
 
     physics.removeBody(door)
  
@@ -328,11 +350,12 @@ end
 -----------------------------------------------------------------------------------------
 
 function ResumeGame()
+    print("Called ResumeGame")
 
         -- make character visible again
     character.isVisible = true
     
-    if (questionsAnswered > 0) then
+    if (questionsAnswered > -1) then
         if (theApple ~= nil) and (theApple.isBodyActive == true) then
             physics.removeBody(theApple)
             theApple.isVisible = false
@@ -359,37 +382,42 @@ function scene:create( event )
         -- Insert background image into the scene group in order to ONLY be associated with this scene
     sceneGroup:insert( bkg_image )    
 
+    platform = display.newImageRect("Images/Ground.png", 250, 50)
+    platform.x = display.contentWidth * 7 / 8
+    platform.y = display.contentHeight * 3 / 4
+
     -- create apples
     apple1 = display.newImageRect("Images/ApplesNathan@2x.png", 100, 100)
     apple1.x = 425
-    apple1.y = 724
+    apple1.y = 723
     apple1:scale(.3,.3)
     apple1.myName = "apple1"
 
     apple2 = display.newImageRect("Images/ApplesNathan@2x.png", 100, 100)
     apple2.x = 537
-    apple2.y = 725
+    apple2.y = 727
     apple2:scale(.3,.3)
     apple2.myName = "apple2"
 
     apple3 = display.newImageRect("Images/ApplesNathan@2x.png", 100, 100)
     apple3.x = 640
-    apple3.y = 725
+    apple3.y = 723
     apple3:scale(.3,.3)
     apple3.myName = "apple3"
 
     apple4 = display.newImageRect("Images/ApplesNathan@2x.png", 100, 100)
     apple4.x = 750
-    apple4.y = 725
+    apple4.y = 727
     apple4:scale(.3,.3)
     apple4.myName = "apple4"
 
     apple5 = display.newImageRect("Images/ApplesNathan@2x.png", 100, 100)
     apple5.x = 870
-    apple5.y = 725
+    apple5.y = 723
     apple5:scale(.3,.3)
     apple5.myName = "apple5"
 
+    sceneGroup:insert(platform)
     sceneGroup:insert(apple1)
     sceneGroup:insert(apple2)
     sceneGroup:insert(apple3)
@@ -399,20 +427,20 @@ function scene:create( event )
     --Insert the right arrow
     rArrow = display.newImageRect("Images/RightArrowUnpressed.png", 100, 50)
     rArrow.x = display.contentWidth * 9.2 / 10
-    rArrow.y = display.contentHeight * 9.5 / 10
+    rArrow.y = display.contentHeight * 9 / 10
 
     -- insert image fpor up arrow
     uArrow = display.newImageRect("Images/UpArrowUnpressed.png", 50, 100)
     uArrow.x = display.contentWidth * 8.2 / 10
-    uArrow.y = display.contentHeight * 8.5 / 10
+    uArrow.y = display.contentHeight * 8 / 10
 
     lArrow = display.newImageRect("Images/LeftArrowUnpressed.png", 100, 50)
     lArrow.x = display.contentWidth * 7.2 / 10
-    lArrow.y = display.contentHeight * 9.5 / 10
+    lArrow.y = display.contentHeight * 9 / 10
 
     door = display.newImage("Images/Level-1Door.png", 50, 50)
-    door.x = display.contentWidth*1/8 
-    door.y = display.contentHeight*6.1/7
+    door.x = display.contentWidth*7/8 
+    door.y = display.contentHeight*4.1/7
     door.myName = "door"
 
     --WALLS--
@@ -430,6 +458,8 @@ function scene:create( event )
     topW = display.newLine( 0, 0, display.contentWidth, 0)
     topW.isVisible = true
 
+    appleW = display.newLine( 0, 530, display.contentWidth, 530)
+    appleW.isVisible = true
     -- Insert objects into the scene group in order to ONLY be associated with this scene    
     floor = display.newImageRect("Images/Ground.png", 1000, 100)
     floor.x = display.contentCenterX
