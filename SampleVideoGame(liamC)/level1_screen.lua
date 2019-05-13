@@ -73,8 +73,6 @@ local door
 local timer
 local savedTime = 10
 
-local platform
-
 -----------------------------------------------------------------------------------------
 -- SOUND VARIABLES
 ----------------------------------------------------------------------------------------- 
@@ -267,8 +265,7 @@ local function onCollision( self, event )
             questionsAnswered = questionsAnswered + 1
         end
         if (questionsAnswered == 5) then
-            print("invisaWall")
-            RemoveWallPhysics()
+            door.isVisible = true
         end
 
         if (event.target.myName == "door") then
@@ -313,7 +310,6 @@ local function RemoveCollisionListeners()
 end     
 
 local function AddPhysicsBodies()
-    physics.addBody( platform, "static", { density=1.0, friction=0.3, bounce=0.2 } )
 
     physics.addBody(leftW, "static", {density=1, friction=0.3, bounce=0.2} )
     physics.addBody(rightW, "static", {density=1, friction=0.3, bounce=0.2} ) 
@@ -332,7 +328,6 @@ local function AddPhysicsBodies()
 end
 
 local function RemovePhysicsBodies()
-physics.removeBody(platform)
 
     physics.removeBody(leftW)
     physics.removeBody(rightW)
@@ -382,10 +377,6 @@ function scene:create( event )
         -- Insert background image into the scene group in order to ONLY be associated with this scene
     sceneGroup:insert( bkg_image )    
 
-    platform = display.newImageRect("Images/Ground.png", 250, 50)
-    platform.x = display.contentWidth * 7 / 8
-    platform.y = display.contentHeight * 3 / 4
-
     -- create apples
     apple1 = display.newImageRect("Images/ApplesNathan@2x.png", 100, 100)
     apple1.x = 425
@@ -417,7 +408,6 @@ function scene:create( event )
     apple5:scale(.3,.3)
     apple5.myName = "apple5"
 
-    sceneGroup:insert(platform)
     sceneGroup:insert(apple1)
     sceneGroup:insert(apple2)
     sceneGroup:insert(apple3)
@@ -439,9 +429,11 @@ function scene:create( event )
     lArrow.y = display.contentHeight * 9 / 10
 
     door = display.newImage("Images/Level-1Door.png", 50, 50)
-    door.x = display.contentWidth*7/8 
-    door.y = display.contentHeight*4.1/7
+    door.x = display.contentWidth*7.6/8 
+    door.y = display.contentHeight*6.4/7
     door.myName = "door"
+    door:scale(.5,.5)
+
 
     --WALLS--
 
@@ -458,8 +450,7 @@ function scene:create( event )
     topW = display.newLine( 0, 0, display.contentWidth, 0)
     topW.isVisible = true
 
-    appleW = display.newLine( 0, 530, display.contentWidth, 530)
-    appleW.isVisible = true
+    appleW = display.newLine(0, 550, display.contentWidth, 550)
     -- Insert objects into the scene group in order to ONLY be associated with this scene    
     floor = display.newImageRect("Images/Ground.png", 1000, 100)
     floor.x = display.contentCenterX
@@ -474,6 +465,7 @@ function scene:create( event )
     sceneGroup:insert( lArrow )
     sceneGroup:insert( rArrow )
     sceneGroup:insert( uArrow ) 
+    sceneGroup:insert( appleW )
 
  
 end --function scene:create( event )
