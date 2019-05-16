@@ -68,10 +68,20 @@ local appleW
 
 local door
 
+local pointerArrow
+local pointerArrow2
+local pointerArrow3
+local pointerArrow4
+local pointerArrow5
+
+local theArrow
+
 
 -- timer vars
-local timer
-local savedTime = 10
+local totalSeconds = 45
+local secondsLeft = 45
+local clockText
+local countDownTimer
 
 -----------------------------------------------------------------------------------------
 -- SOUND VARIABLES
@@ -85,6 +95,9 @@ local hitSoundChannel
 
 local winSound = audio.loadSound( "Sounds/Cheer.m4a" )
 local winSoundChannel
+
+local bkgMusicLevel1 = audio.loadStream("Sounds/level1Music.mp3")
+local bkgMusicLevel1Channel = audio.play(bkgMusicLevel1, { channel=6, loops=-1 } )
 
 ----------------------------------------------------------------------
 -- LOCAL SCENE FUNCTIONS
@@ -129,6 +142,24 @@ local function RemoveArrowEventListeners()
     rArrow:removeEventListener("touch", right)
     lArrow:removeEventListener("touch", left)
     uArrow:removeEventListener("touch", up)
+end
+
+local function Mute(touch)
+    if (touch.phase == "ended") then
+        audio.pause(bkgMusicMM)
+        soundOn = false
+        muteButton.isVisible = false
+        unmuteButton.isVisible = true
+    end
+end
+
+local function UnMute(touch)
+    if (touch.phase == "ended") then
+        audio.resume(bkgMusicMM)
+        soundOn = true
+        muteButton.isVisible = true
+        unmuteButton.isVisible = false
+    end
 end
 
 local function AddRuntimeListeners()
@@ -188,6 +219,51 @@ local function YouLoseTransition()
     apple5.isVisible = false
     loseSoundChannel = audio.play(loseSound)
     composer.gotoScene( "you_lose" )
+end
+
+local transitionOptions_SlideDown = (
+    {
+        effect = "slideDown", -- The animation it's going to use when transitioning
+        time = 1000, -- How long the transition will take
+    })
+
+-- The function which transitions to the next screen
+function Transition_SlideDown( )
+    composer.gotoScene( "you_lose", transitionOptions_SlideDown )
+end 
+
+local function UpdateTime()
+
+    -- decrement the number of seconds
+    secondsLeft = secondsLeft - 1
+    
+    -- display the number of seconds left in the clock object
+    clockText.text = secondsLeft .. ""
+
+    if (secondsLeft == 0 ) then
+        YouLoseTransition()
+    end
+
+end
+
+local function Die()
+    physics.removeBody(pointerArrow)
+end
+
+local function Die2()
+    physics.removeBody(pointerArrow2)
+end
+
+local function Die3()
+    physics.removeBody(pointerArrow3)
+end
+
+local function Die4()
+    physics.removeBody(pointerArrow4)
+end
+
+local function Die5()
+    physics.removeBody(pointerArrow5)
 end
 
 local function RemoveWallPhysics()
@@ -276,7 +352,27 @@ local function onCollision( self, event )
                 winSoundChannel = audio.play(winSound)
                 composer.gotoScene( "you_win" )
             end
-        end        
+        end
+           
+        if  (event.target.myName == "pointerArrow") then
+            timer.performWithDelay(100, Die)
+        end
+            
+        if  (event.target.myName == "pointerArrow2") then
+            timer.performWithDelay(100, Die2)
+        end  
+            
+        if  (event.target.myName == "pointerArrow3") then
+            timer.performWithDelay(100, Die3)
+        end
+
+        if  (event.target.myName == "pointerArrow4") then
+            timer.performWithDelay(100, Die4)
+        end
+            
+        if  (event.target.myName == "pointerArrow5") then
+            timer.performWithDelay(100, Die5)
+        end
 
     end
 end
@@ -294,6 +390,17 @@ local function AddCollisionListeners()
     apple5.collision = onCollision
     apple5:addEventListener( "collision" )
 
+    pointerArrow.collision = onCollision
+    pointerArrow:addEventListener( "collision" )
+    pointerArrow2.collision = onCollision
+    pointerArrow:addEventListener( "collision" )
+    pointerArrow3.collision = onCollision
+    pointerArrow:addEventListener( "collision" )
+    pointerArrow4.collision = onCollision
+    pointerArrow:addEventListener( "collision" )
+    pointerArrow5.collision = onCollision
+    pointerArrow:addEventListener( "collision" )
+
     door.collision = onCollision
     door:addEventListener( "collision" )    
 
@@ -305,6 +412,12 @@ local function RemoveCollisionListeners()
     apple3:removeEventListener( "collision" )
     apple4:removeEventListener( "collision" )
     apple5:removeEventListener( "collision" )
+
+    pointerArrow:removeEventListener( "collision" )
+    pointerArrow2:removeEventListener( "collision" )
+    pointerArrow3:removeEventListener( "collision" )
+    pointerArrow4:removeEventListener( "collision" )
+    pointerArrow5:removeEventListener( "collision" )
 
     door:removeEventListener( "collision" )
 end     
@@ -323,6 +436,12 @@ local function AddPhysicsBodies()
     physics.addBody(apple4, "static", {density=0, friction=0, bounce=0} ) 
     physics.addBody(apple5, "static", {density=0, friction=0, bounce=0} ) 
 
+    physics.addBody(pointerArrow, "static", {density=0, friction=0, bounce=0} )
+    physics.addBody(pointerArrow2, "static", {density=0, friction=0, bounce=0} ) 
+    physics.addBody(pointerArrow3, "static", {density=0, friction=0, bounce=0} ) 
+    physics.addBody(pointerArrow4, "static", {density=0, friction=0, bounce=0} ) 
+    physics.addBody(pointerArrow5, "static", {density=0, friction=0, bounce=0} ) 
+
     physics.addBody(door, "static", {density=1, friction=0.3, bounce=0.2} )
 
 end
@@ -339,6 +458,10 @@ local function RemovePhysicsBodies()
  
 end
 
+local function StartTimer()
+    -- create countdown timer that loops infinetely
+    countDownTimer = timer.performWithDelay( 1000, UpdateTime, 0)
+end
 
 -----------------------------------------------------------------------------------------
 -- GLOBAL SCENE FUNCTIONS
@@ -368,7 +491,7 @@ function scene:create( event )
     -----------------------------------------------------------------------------------------
 
     -- Insert the background image
-    bkg_image = display.newImageRect("Images/Level1Screen2Nathan@2x.png", display.contentWidth, display.contentHeight)
+    bkg_image = display.newImageRect("Images/Level1ScreenNathanC@2x.png", display.contentWidth, display.contentHeight)
     bkg_image.x = display.contentCenterX
     bkg_image.y = display.contentCenterY
     bkg_image.width = display.contentWidth
@@ -414,6 +537,9 @@ function scene:create( event )
     sceneGroup:insert(apple4)
     sceneGroup:insert(apple5)
 
+    clockText = display.newText( "" .. secondsLeft .. "", display.contentHeight*1/7, display.contentWidth*1/9, nil, 50 )
+
+
     --Insert the right arrow
     rArrow = display.newImageRect("Images/RightArrowUnpressed.png", 100, 50)
     rArrow.x = display.contentWidth * 9.2 / 10
@@ -433,7 +559,15 @@ function scene:create( event )
     door.y = display.contentHeight*6.4/7
     door.myName = "door"
     door:scale(.5,.5)
+    muteButton = display.newImageRect("Images/Mute.png", 200, 200)
+    muteButton.x = display.contentWidth*1.5/10
+    muteButton.y = display.contentHeight*1.3/10
+    muteButton.isVisible = true
 
+    unmuteButton = display.newImageRect("Images/UnMute.png", 200, 200)
+    unmuteButton.x = display.contentWidth*1.5/10
+    unmuteButton.y = display.contentHeight*1.3/10
+    unmuteButton.isVisible = false
 
     --WALLS--
 
@@ -455,7 +589,32 @@ function scene:create( event )
     floor = display.newImageRect("Images/Ground.png", 1000, 100)
     floor.x = display.contentCenterX
     floor.y = display.contentHeight * 2.1/2
-    
+
+    pointerArrow = display.newImageRect("Images/RightArrowUnpressed.png", 50, 25)
+    pointerArrow.x = display.contentWidth * 3.7 / 10
+    pointerArrow.y = display.contentHeight * 9.4 / 10
+    pointerArrow.myName = "pointerArrow"
+
+    pointerArrow2 = display.newImageRect("Images/RightArrowUnpressed.png", 50, 25)
+    pointerArrow2.x = display.contentWidth * 4.7 / 10
+    pointerArrow2.y = display.contentHeight * 9.4 / 10
+    pointerArrow2.myName = "pointerArrow2"
+
+    pointerArrow3 = display.newImageRect("Images/RightArrowUnpressed.png", 50, 25)
+    pointerArrow3.x = display.contentWidth * 5.8 / 10
+    pointerArrow3.y = display.contentHeight * 9.4 / 10
+    pointerArrow3.myName = "pointerArrow3"
+
+    pointerArrow4 = display.newImageRect("Images/RightArrowUnpressed.png", 50, 25)
+    pointerArrow4.x = display.contentWidth * 6.8 / 10
+    pointerArrow4.y = display.contentHeight * 9.4 / 10
+    pointerArrow4.myName = "pointerArrow4"   
+
+    pointerArrow5 = display.newImageRect("Images/RightArrowUnpressed.png", 50, 25)
+    pointerArrow5.x = display.contentWidth * 7.9 / 10
+    pointerArrow5.y = display.contentHeight * 9.4 / 10
+    pointerArrow5.myName = "pointerArrow5"
+
     -- Insert objects into the scene group in order to ONLY be associated with this scene
     sceneGroup:insert( floor )
     sceneGroup:insert( topW )
@@ -466,8 +625,15 @@ function scene:create( event )
     sceneGroup:insert( rArrow )
     sceneGroup:insert( uArrow ) 
     sceneGroup:insert( appleW )
+    sceneGroup:insert(unmuteButton)
+    sceneGroup:insert(muteButton)
+    sceneGroup:insert(clockText)
+    sceneGroup:insert(pointerArrow)
+    sceneGroup:insert(pointerArrow2)
+    sceneGroup:insert(pointerArrow3)
+    sceneGroup:insert(pointerArrow4)
+    sceneGroup:insert(pointerArrow5)
 
- 
 end --function scene:create( event )
 
 -----------------------------------------------------------------------------------------
@@ -493,6 +659,9 @@ function scene:show( event )
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.
 
+        bkgMusicLevel1Channel = audio.play(bkgMusic)
+        muteButton:addEventListener("touch", Mute)
+        unmuteButton:addEventListener("touch", UnMute)    
 
         questionsAnswered = 0
 
@@ -507,6 +676,7 @@ function scene:show( event )
 
         AddPhysicsBodies()
 
+        StartTimer()
 
     end
 
@@ -527,7 +697,7 @@ function scene:hide( event )
         -- Called when the scene is on screen (but is about to go off screen).
         -- Insert code here to "pause" the scene.
         -- Example: stop timers, stop animation, stop audio, etc.
-
+        bkgMusicLevel1Channel = audio.stop()
     -----------------------------------------------------------------------------------------
 
     elseif ( phase == "did" ) then
