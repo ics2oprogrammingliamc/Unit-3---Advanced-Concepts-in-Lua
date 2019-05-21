@@ -248,22 +248,27 @@ end
 
 local function Die()
     physics.removeBody(pointerArrow)
+    pointerArrow.isVisible = false
 end
 
 local function Die2()
     physics.removeBody(pointerArrow2)
+    pointerArrow2.isVisible = false
 end
 
 local function Die3()
     physics.removeBody(pointerArrow3)
+    pointerArrow3.isVisible = false
 end
 
 local function Die4()
     physics.removeBody(pointerArrow4)
+    pointerArrow4.isVisible = false
 end
 
 local function Die5()
     physics.removeBody(pointerArrow5)
+    pointerArrow5.isVisible = false
 end
 
 local function RemoveWallPhysics()
@@ -393,13 +398,13 @@ local function AddCollisionListeners()
     pointerArrow.collision = onCollision
     pointerArrow:addEventListener( "collision" )
     pointerArrow2.collision = onCollision
-    pointerArrow:addEventListener( "collision" )
+    pointerArrow2:addEventListener( "collision" )
     pointerArrow3.collision = onCollision
-    pointerArrow:addEventListener( "collision" )
+    pointerArrow3:addEventListener( "collision" )
     pointerArrow4.collision = onCollision
-    pointerArrow:addEventListener( "collision" )
+    pointerArrow4:addEventListener( "collision" )
     pointerArrow5.collision = onCollision
-    pointerArrow:addEventListener( "collision" )
+    pointerArrow5:addEventListener( "collision" )
 
     door.collision = onCollision
     door:addEventListener( "collision" )    
@@ -590,29 +595,29 @@ function scene:create( event )
     floor.x = display.contentCenterX
     floor.y = display.contentHeight * 2.1/2
 
-    pointerArrow = display.newImageRect("Images/RightArrowUnpressed.png", 50, 25)
+    pointerArrow = display.newImageRect("Images/Arrow.png", 50, 25)
     pointerArrow.x = display.contentWidth * 3.7 / 10
-    pointerArrow.y = display.contentHeight * 9.4 / 10
+    pointerArrow.y = display.contentHeight * 9.41 / 10
     pointerArrow.myName = "pointerArrow"
 
-    pointerArrow2 = display.newImageRect("Images/RightArrowUnpressed.png", 50, 25)
+    pointerArrow2 = display.newImageRect("Images/Arrow.png", 50, 25)
     pointerArrow2.x = display.contentWidth * 4.7 / 10
-    pointerArrow2.y = display.contentHeight * 9.4 / 10
+    pointerArrow2.y = display.contentHeight * 9.41 / 10
     pointerArrow2.myName = "pointerArrow2"
 
-    pointerArrow3 = display.newImageRect("Images/RightArrowUnpressed.png", 50, 25)
+    pointerArrow3 = display.newImageRect("Images/Arrow.png", 50, 25)
     pointerArrow3.x = display.contentWidth * 5.8 / 10
-    pointerArrow3.y = display.contentHeight * 9.4 / 10
+    pointerArrow3.y = display.contentHeight * 9.41 / 10
     pointerArrow3.myName = "pointerArrow3"
 
-    pointerArrow4 = display.newImageRect("Images/RightArrowUnpressed.png", 50, 25)
+    pointerArrow4 = display.newImageRect("Images/Arrow.png", 50, 25)
     pointerArrow4.x = display.contentWidth * 6.8 / 10
-    pointerArrow4.y = display.contentHeight * 9.4 / 10
+    pointerArrow4.y = display.contentHeight * 9.41 / 10
     pointerArrow4.myName = "pointerArrow4"   
 
-    pointerArrow5 = display.newImageRect("Images/RightArrowUnpressed.png", 50, 25)
+    pointerArrow5 = display.newImageRect("Images/Arrow.png", 50, 25)
     pointerArrow5.x = display.contentWidth * 7.9 / 10
-    pointerArrow5.y = display.contentHeight * 9.4 / 10
+    pointerArrow5.y = display.contentHeight * 9.41 / 10
     pointerArrow5.myName = "pointerArrow5"
 
     -- Insert objects into the scene group in order to ONLY be associated with this scene
